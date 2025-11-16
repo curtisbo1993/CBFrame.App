@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CBFrame.Codes\CBFrame.Codes.csproj" />
+    <ProjectReference Include="..\CBFrame.Core\CBFrame.Core.csproj" />
+    <ProjectReference Include="..\CBFrame.Loads\CBFrame.Loads.csproj" />
+    <ProjectReference Include="..\CBFrame.MaterialsDb\CBFrame.MaterialsDb.csproj" />
+    <ProjectReference Include="..\CBFrame.SectionsDb\CBFrame.SectionsDb.csproj" />
+  </ItemGroup>
+
+</Project>

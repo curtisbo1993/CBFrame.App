@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<TargetFramework>net8.0-windows7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CBFrame.Analysis\CBFrame.Analysis.csproj" />
+    <ProjectReference Include="..\CBFrame.App.Wpf\CBFrame.App.Wpf.csproj" />
+    <ProjectReference Include="..\CBFrame.Codes\CBFrame.Codes.csproj" />
+    <ProjectReference Include="..\CBFrame.Core\CBFrame.Core.csproj" />
+    <ProjectReference Include="..\CBFrame.Design.Concrete\CBFrame.Design.Concrete.csproj" />
+    <ProjectReference Include="..\CBFrame.Design.Foundation\CBFrame.Design.Foundation.csproj" />
+    <ProjectReference Include="..\CBFrame.Design.Masonry\CBFrame.Design.Masonry.csproj" />
+    <ProjectReference Include="..\CBFrame.Design.Steel\CBFrame.Design.Steel.csproj" />
+    <ProjectReference Include="..\CBFrame.Design.Wood\CBFrame.Design.Wood.csproj" />
+    <ProjectReference Include="..\CBFrame.IO\CBFrame.IO.csproj" />
+    <ProjectReference Include="..\CBFrame.Loads\CBFrame.Loads.csproj" />
+    <ProjectReference Include="..\CBFrame.MaterialsDb\CBFrame.MaterialsDb.csproj" />
+    <ProjectReference Include="..\CBFrame.SectionsDb\CBFrame.SectionsDb.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>
