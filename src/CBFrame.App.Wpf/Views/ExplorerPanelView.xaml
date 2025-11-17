@@ -1,0 +1,10 @@
+﻿<UserControl x:Class="CBFrame.App.Wpf.Views.ExplorerPanelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Background="{DynamicResource PanelBackgroundBrush}">
+        <TextBlock Text="Model Explorer"
+                   Margin="8"
+                   Foreground="{DynamicResource PanelForegroundBrush}"
+                   FontWeight="SemiBold" />
+    </Border>
+</UserControl>

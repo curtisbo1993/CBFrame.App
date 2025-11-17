@@ -2,6 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:fluent="urn:fluent-ribbon"
+        xmlns:views="clr-namespace:CBFrame.App.Wpf.Views"
         Title="cb_FRAME – Structural Analysis"
         Height="720"
         Width="1280"
@@ -18,13 +19,14 @@
         </Grid.RowDefinitions>
 
         <!-- RIBBON -->
-        <fluent:Ribbon Grid.Row="0">
+        <fluent:Ribbon Grid.Row="0"
+                       Background="{DynamicResource RibbonBackgroundBrush}"
+                       Foreground="{DynamicResource PanelForegroundBrush}">
             <fluent:Ribbon.Menu>
                 <fluent:Backstage>
                     <fluent:BackstageTabItem Header="File">
                         <StackPanel Margin="16">
-                            <TextBlock Text="File actions will go here (New, Open, Save...)"
-                                       Foreground="{DynamicResource PanelForegroundBrush}" />
+                            <TextBlock Text="File actions will go here (New, Open, Save...)" />
                         </StackPanel>
                     </fluent:BackstageTabItem>
                 </fluent:Backstage>
@@ -92,50 +94,36 @@
         <!-- MAIN CONTENT AREA: Left / Center / Right panels -->
         <Grid Grid.Row="1" Margin="4">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="260"/>
-                <!-- Left panel: Explorer -->
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="260" />
+                <!-- Left: Explorer -->
+                <ColumnDefinition Width="*" />
                 <!-- Center: 3D viewport -->
-                <ColumnDefinition Width="320"/>
-                <!-- Right: Properties/Data -->
+                <ColumnDefinition Width="320" />
+                <!-- Right: Properties + Data Entry -->
             </Grid.ColumnDefinitions>
 
-            <!-- LEFT PANEL (Explorer placeholder) -->
-            <Border Grid.Column="0"
-                    Margin="0,0,4,0"
-                    Background="{DynamicResource PanelBackgroundBrush}">
-                <TextBlock Text="Explorer Panel (placeholder)"
-                           Margin="8"
-                           Foreground="{DynamicResource PanelForegroundBrush}"
-                           VerticalAlignment="Top"
-                           FontWeight="SemiBold"/>
-            </Border>
+            <!-- LEFT: Explorer -->
+            <views:ExplorerPanelView Grid.Column="0"
+                                     Margin="0,0,4,0"
+                                     DataContext="{Binding Explorer}" />
 
-            <!-- CENTER PANEL (3D viewport placeholder) -->
-            <Border Grid.Column="1"
-                    Background="{DynamicResource ViewportBackgroundBrush}">
-                <TextBlock Text="3D Viewport Placeholder"
-                           Foreground="{DynamicResource PanelForegroundBrush}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           FontSize="20"
-                           FontWeight="SemiBold"/>
-            </Border>
+            <!-- CENTER: 3D viewport -->
+            <views:Model3DView Grid.Column="1"
+                               DataContext="{Binding Model3D}" />
 
-            <!-- RIGHT PANEL (Properties / Data Entry placeholder) -->
-            <Border Grid.Column="2"
-                    Margin="4,0,0,0"
-                    Background="{DynamicResource PanelBackgroundBrush}">
-                <StackPanel Margin="8">
-                    <TextBlock Text="Right Panels (placeholder)"
-                               Foreground="{DynamicResource PanelForegroundBrush}"
-                               FontWeight="SemiBold"/>
-                    <TextBlock Text="Properties / Data Entry will live here."
-                               Margin="0,4,0,0"
-                               Foreground="{DynamicResource PanelForegroundBrush}"
-                               Opacity="0.7"/>
-                </StackPanel>
-            </Border>
+            <!-- RIGHT: Properties (top) + Data Entry (bottom) -->
+            <Grid Grid.Column="2" Margin="4,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <views:PropertiesPanelView Grid.Row="0"
+                                           DataContext="{Binding Properties}" />
+
+                <views:DataEntryPanelView Grid.Row="1"
+                                          DataContext="{Binding DataEntry}" />
+            </Grid>
         </Grid>
 
         <!-- STATUS BAR -->

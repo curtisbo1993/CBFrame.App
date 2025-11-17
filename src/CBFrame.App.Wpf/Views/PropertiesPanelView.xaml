@@ -1,0 +1,12 @@
+﻿<!-- PropertiesPanelView.xaml -->
+<UserControl x:Class="CBFrame.App.Wpf.Views.PropertiesPanelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Background="{DynamicResource PanelBackgroundBrush}">
+        <StackPanel Margin="8">
+            <TextBlock Text="Properties"
+                       Foreground="{DynamicResource PanelForegroundBrush}"
+                       FontWeight="SemiBold" />
+        </StackPanel>
+    </Border>
+</UserControl>

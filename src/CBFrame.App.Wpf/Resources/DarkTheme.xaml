@@ -1,0 +1,39 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ======================= -->
+    <!--   DARK THEME COLORS     -->
+    <!-- ======================= -->
+
+    <!-- Backgrounds -->
+    <SolidColorBrush x:Key="AppBackgroundBrush" Color="#1E1E1E" />
+    <SolidColorBrush x:Key="PanelBackgroundBrush" Color="#252526" />
+    <SolidColorBrush x:Key="ViewportBackgroundBrush" Color="#1A1A1A" />
+    <SolidColorBrush x:Key="RibbonBackgroundBrush" Color="#2D2D30" />
+
+    <!-- Foregrounds -->
+    <SolidColorBrush x:Key="PanelForegroundBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="StatusBarForegroundBrush" Color="#E0E0E0" />
+
+    <!-- Accent Colors -->
+    <SolidColorBrush x:Key="AccentBrush" Color="#4FC3F7" />
+    <SolidColorBrush x:Key="AccentBrushLow" Color="#3CA9D6" />
+
+    <!-- Status Bar -->
+    <SolidColorBrush x:Key="StatusBarBackgroundBrush" Color="#2D2D30" />
+
+    <!-- ======================= -->
+    <!--   GLOBAL TEXT STYLES    -->
+    <!-- ======================= -->
+
+    <Style TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource PanelForegroundBrush}" />
+    </Style>
+
+    <Style TargetType="Button">
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+</ResourceDictionary>
