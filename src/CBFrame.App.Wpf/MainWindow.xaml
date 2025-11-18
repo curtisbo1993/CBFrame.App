@@ -70,6 +70,38 @@
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
 
+            <!-- Model tab: tools + undo/redo -->
+            <fluent:RibbonTabItem Header="Model">
+                <!-- Modeling tools -->
+                <fluent:RibbonGroupBox Header="Tools" Margin="0,0,8,0">
+                    <fluent:Button Header="Select"
+                                   Command="{Binding SelectToolCommand}"
+                                   ToolTip="Select nodes and members" />
+
+                    <fluent:Button Header="Node"
+                                   Command="{Binding DrawNodeToolCommand}"
+                                   ToolTip="Place a node in the model" />
+
+                    <fluent:Button Header="Member"
+                                   Command="{Binding DrawMemberToolCommand}"
+                                   ToolTip="Draw a member between two nodes" />
+                </fluent:RibbonGroupBox>
+
+                <!-- Undo / Redo -->
+                <fluent:RibbonGroupBox Header="Edit" Margin="0,0,8,0">
+                    <fluent:Button Header="Undo"
+                                   Command="{Binding UndoCommand}"
+                                   IsEnabled="{Binding CanUndo}"
+                                   ToolTip="Undo last action" />
+
+                    <fluent:Button Header="Redo"
+                                   Command="{Binding RedoCommand}"
+                                   IsEnabled="{Binding CanRedo}"
+                                   ToolTip="Redo last undone action" />
+                </fluent:RibbonGroupBox>
+            </fluent:RibbonTabItem>
+
+
             <!-- Analyze tab (future) -->
             <fluent:RibbonTabItem Header="Analyze">
                 <fluent:RibbonGroupBox Header="Analysis">
@@ -132,6 +164,18 @@
                    Foreground="{DynamicResource StatusBarForegroundBrush}">
             <StatusBarItem>
                 <TextBlock Text="{Binding StatusText}" />
+            </StatusBarItem>
+            
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock Text="{Binding RightStatusText}" />
+            </StatusBarItem>
+            
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusText}" />
+            </StatusBarItem>
+
+            <StatusBarItem>
+                <TextBlock Text="{Binding ActiveToolName}" />
             </StatusBarItem>
 
             <StatusBarItem HorizontalAlignment="Right">
