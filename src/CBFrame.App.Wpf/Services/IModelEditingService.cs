@@ -1,4 +1,5 @@
-﻿using System.Windows.Media.Media3D;
+﻿using CBFrame.App.Wpf.Model;
+using System.Windows.Media.Media3D;
 
 namespace CBFrame.App.Wpf.Services
 {
@@ -6,5 +7,10 @@ namespace CBFrame.App.Wpf.Services
     {
         void AddNode(Point3D position);
         void AddMember(Point3D start, Point3D end);
+
+        FrameDocument Document { get; }
+
+        void SetDocument(FrameDocument document);
+
     }
 }

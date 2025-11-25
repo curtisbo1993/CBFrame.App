@@ -28,5 +28,13 @@ namespace CBFrame.App.Wpf.Services
             var cmd = new AddMemberCommand(_document, start, end);
             _undoRedoService.Push(cmd);
         }
+        public FrameDocument Document { get; private set; }
+
+        public void SetDocument(FrameDocument document)
+        {
+            Document = document ?? throw new ArgumentNullException(nameof(document));
+
+            // Optionally clear selection, reset undo/redo, etc.
+        }
     }
 }

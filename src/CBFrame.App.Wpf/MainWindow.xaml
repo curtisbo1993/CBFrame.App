@@ -37,36 +37,23 @@
             <!-- Home tab -->
             <fluent:RibbonTabItem Header="Home">
                 <fluent:RibbonGroupBox Header="Model" Margin="0,0,8,0">
+                    <!-- NEW PROJECT -->
                     <fluent:Button Header="New Frame"
-                                   LargeIcon="{x:Null}"
-                                   ToolTip="Create a new frame model (placeholder)"
-                                   IsEnabled="False"/>
+                   LargeIcon="{x:Null}"
+                   ToolTip="Create a new frame model"
+                   Click="NewProject_Click" />
+
+                    <!-- OPEN PROJECT -->
                     <fluent:Button Header="Open"
-                                   LargeIcon="{x:Null}"
-                                   ToolTip="Open an existing model (placeholder)"
-                                   IsEnabled="False"/>
-                </fluent:RibbonGroupBox>
+                   LargeIcon="{x:Null}"
+                   ToolTip="Open an existing frame model"
+                   Click="OpenProject_Click" />
 
-                <fluent:RibbonGroupBox Header="View" Margin="0,0,8,0">
-                    <fluent:Button Header="Reset View"
-                                   LargeIcon="{x:Null}"
-                                   ToolTip="Reset the 3D view (placeholder)"
-                                   IsEnabled="False"/>
-                    <fluent:Button Header="Zoom Extents"
-                                   LargeIcon="{x:Null}"
-                                   ToolTip="Zoom to extents (placeholder)"
-                                   IsEnabled="False"/>
-                </fluent:RibbonGroupBox>
-
-                <fluent:RibbonGroupBox Header="Panels" Margin="0,0,8,0">
-                    <fluent:ToggleButton Header="Explorer"
-                                         IsChecked="True"
-                                         ToolTip="Toggle Explorer panel (placeholder)"
-                                         IsEnabled="False"/>
-                    <fluent:ToggleButton Header="Properties"
-                                         IsChecked="True"
-                                         ToolTip="Toggle Properties panel (placeholder)"
-                                         IsEnabled="False"/>
+                    <!-- SAVE PROJECT -->
+                    <fluent:Button Header="Save"
+                   LargeIcon="{x:Null}"
+                   ToolTip="Save the current frame model"
+                   Click="SaveProject_Click" />
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
 

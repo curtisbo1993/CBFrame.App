@@ -8,8 +8,8 @@
                        Foreground="{DynamicResource PanelForegroundBrush}"
                        FontWeight="SemiBold" />
             <TextBlock Text="{Binding SelectedObject}" 
-           Foreground="{DynamicResource PanelForegroundBrush}"
-           Margin="4" />
+                       Foreground="{DynamicResource PanelForegroundBrush}"
+                       Margin="4" />            
             <TextBlock Text="{Binding SelectedObject}" />
         </StackPanel>
     </Border>
