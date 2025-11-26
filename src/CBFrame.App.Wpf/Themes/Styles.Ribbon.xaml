@@ -1,0 +1,435 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ===================== RIBBON GROUP HEADER ===================== -->
+
+    <!-- Text under each ribbon group: “Model”, “Draw Elements”, etc. -->
+    <Style x:Key="CbRibbonGroupHeaderTextStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource CbTextSecondaryBrush}"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Margin" Value="0,4,0,0"/>
+    </Style>
+
+    <!-- ======================= RIBBON TABS ============================ -->
+
+    <!-- Home / Modify / View / Drawing Tools / ... row -->
+    <Style x:Key="CbRibbonTabStyle" TargetType="ToggleButton">
+        <Setter Property="Foreground" Value="{StaticResource CbTextSecondaryBrush}" />
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="12,0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+
+        <Style.Triggers>
+
+            <!-- HOVER -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource CbAccentPurpleBrush}"/>
+            </Trigger>
+
+            <!-- ACTIVE TAB -->
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource CbAccentPurpleBrush}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border Background="Transparent" Padding="12,0">
+                                <StackPanel>
+                                    <TextBlock Text="{TemplateBinding Content}"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource CbAccentPurpleBrush}"
+                                       HorizontalAlignment="Center"/>
+
+                                    <!-- underline -->
+                                    <Border Height="3"
+                                    Width="36"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,4,0,0"
+                                    CornerRadius="2"
+                                    Background="{StaticResource CbAccentPurpleBrush}"/>
+                                </StackPanel>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+
+        </Style.Triggers>
+    </Style>
+
+    <!-- =================== HEADER / QUICK ACCESS ====================== -->
+
+    <!-- Small square buttons in the title bar (help, collapse, quick tools) -->
+    <Style x:Key="CbQuickAccessButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="24"/>
+        <Setter Property="Height" Value="24"/>
+        <Setter Property="Margin" Value="0,0,0,0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource CbTextSecondaryBrush}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        CornerRadius="4">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                                Value="{StaticResource CbInnerCardBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                                Value="{StaticResource CbAccentPurpleBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Min / Max window buttons -->
+    <Style x:Key="CbWindowHeaderButtonStyle" TargetType="Button"
+       BasedOn="{StaticResource CbQuickAccessButtonStyle}">
+        <Setter Property="Width" Value="36"/>
+        <Setter Property="Height" Value="28"/>
+    </Style>
+
+    <!-- Close button (red on hover/press) -->
+    <Style x:Key="CbWindowHeaderCloseButtonStyle" TargetType="Button"
+       BasedOn="{StaticResource CbWindowHeaderButtonStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                        Background="Transparent"
+                        CornerRadius="0">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#33FF0000"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#FFFF0000"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ================= SMALL RIBBON BUTTONS (Units / Info / Settings) ============== -->
+
+    <Style x:Key="CbRibbonButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource CbTextPrimaryBrush}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="6,4"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="4"
+                        Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Left"
+                                      VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                                Value="{StaticResource CbInnerCardBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                                Value="{StaticResource CbAccentPurpleBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Left rail buttons in the Model group: Units / Info / Settings -->
+    <Style x:Key="CbRibbonModelLeftButtonStyle"
+   TargetType="Button"
+   BasedOn="{StaticResource CbRibbonButtonStyle}">
+
+        <!-- Make width/height/padding easy to tweak in one place -->
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="Width" Value="110"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+    </Style>
+
+    <!-- ================= BIG TOOL BUTTONS (Nodes / Members) ========================== -->
+    <Style x:Key="CbRibbonToolButtonStyle" TargetType="ButtonBase">
+        <Setter Property="Width" Value="96"/>
+        <Setter Property="Height" Value="80"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource CbTextPrimaryBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource CbRibbonSeparatorBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ButtonBase">
+
+                    <Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="6"
+                    Padding="8,6">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+
+                            <!-- Icon -->
+                            <Image Width="28" Height="28"
+                               Margin="0,0,0,4"
+                               Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"/>
+
+                            <!-- Text -->
+                            <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+
+                        <!-- Hover -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border"
+                            Property="Background"
+                            Value="{StaticResource CbInnerCardBrush}"/>
+                        </Trigger>
+
+                        <!-- Press -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border"
+                            Property="Background"
+                            Value="{StaticResource CbAccentPurpleBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ================= LABEL STYLE FOR ICON BUTTONS (optional) ===================== -->
+
+    <Style x:Key="CbRibbonIconLabelTextStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource CbTextPrimaryBrush}"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+    </Style>
+
+    <!-- ================== GENERIC ICON BUTTON (Plates, Area, Nodal, etc.) ============ -->
+
+    <!-- Used by Buttons that set Tag = icon path, Content = label -->
+    <Style x:Key="CbRibbonIconButtonStyle" TargetType="ToggleButton">
+        <Setter Property="Width" Value="72"/>
+        <Setter Property="Height" Value="72"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource CbTextPrimaryBrush}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="4"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    CornerRadius="6"
+                    Padding="{TemplateBinding Padding}">
+                        <StackPanel Orientation="Vertical"
+                            HorizontalAlignment="Center">
+                            <Image Width="28" Height="28"
+                           Margin="0,0,0,4"
+                           Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            <TextBlock Text="{TemplateBinding Content}"
+                               Style="{StaticResource CbRibbonIconLabelTextStyle}"/>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+
+                        <!-- Hover -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                            Value="{StaticResource CbInnerCardBrush}"/>
+                        </Trigger>
+
+                        <!-- Press -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                            Value="{StaticResource CbAccentPurpleBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+
+                        <!-- Selected tool -->
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                            Value="{StaticResource CbAccentPurpleBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Special style just for the Nodes button: small white dot + aligned label -->
+    <Style x:Key="CbRibbonNodesButtonStyle"
+   TargetType="Button"
+   BasedOn="{StaticResource CbRibbonIconButtonStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    CornerRadius="6"
+                    Padding="{TemplateBinding Padding}">
+                        <StackPanel Orientation="Vertical"
+                            HorizontalAlignment="Center">
+
+                            <!-- Small white dot icon -->
+                            <Ellipse Width="10"
+                             Height="10"
+                             Fill="White"
+                             Margin="0,2,0,6"/>
+
+                            <!-- Label -->
+                            <TextBlock Text="{TemplateBinding Content}"
+                               Style="{StaticResource CbRibbonIconLabelTextStyle}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border"
+                            Property="Background"
+                            Value="{StaticResource CbInnerCardBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border"
+                            Property="Background"
+                            Value="{StaticResource CbAccentPurpleBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Smaller variant just for Nodes (or any tiny icon) -->
+    <Style x:Key="CbRibbonIconButtonSmallStyle"
+       TargetType="Button"
+       BasedOn="{StaticResource CbRibbonIconButtonStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="6"
+                        Padding="{TemplateBinding Padding}">
+                        <StackPanel Orientation="Vertical"
+                                HorizontalAlignment="Center">
+                            <!-- 🔹 Smaller icon here -->
+                            <Image Width="20" Height="20"
+                               Margin="0,0,0,4"
+                               Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            <TextBlock Text="{TemplateBinding Content}"
+                                   Style="{StaticResource CbRibbonIconLabelTextStyle}"/>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                                Value="{StaticResource CbInnerCardBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                                Value="{StaticResource CbAccentPurpleBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Special style for the Nodes button: white dot instead of PNG -->
+    <Style x:Key="CbRibbonDotButtonStyle"
+   TargetType="Button"
+   BasedOn="{StaticResource CbRibbonIconButtonStyle}">
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    CornerRadius="6"
+                    Padding="{TemplateBinding Padding}">
+                        <StackPanel Orientation="Vertical"
+                            HorizontalAlignment="Center">
+
+                            <!-- Vector white dot icon -->
+                            <Ellipse Width="12"
+                             Height="12"
+                             Fill="White"
+                             Margin="0,0,0,4"/>
+
+                            <!-- Label -->
+                            <TextBlock Text="{TemplateBinding Content}"
+                               Style="{StaticResource CbRibbonIconLabelTextStyle}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border"
+                            Property="Background"
+                            Value="{StaticResource CbInnerCardBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border"
+                            Property="Background"
+                            Value="{StaticResource CbAccentPurpleBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

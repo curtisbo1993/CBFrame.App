@@ -1,0 +1,737 @@
+﻿<Window x:Class="CBFrame.App.Wpf.MainShellWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="cb_FRAME – Structural Analysis"
+        Height="1000"
+        Width="1900"
+        MinWidth="1300"
+        Background="{StaticResource CbBackgroundMainBrush}"
+        WindowStyle="None"
+              ResizeMode="CanResize"
+        Loaded="MainWindow_OnLoaded">
+
+    <!-- Custom chrome so we can draw our own header -->
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="0"
+                            ResizeBorderThickness="5"
+                            CornerRadius="0"
+                            GlassFrameThickness="0"
+                            UseAeroCaptionButtons="False" />
+    </shell:WindowChrome.WindowChrome>
+
+    <Grid Background="{StaticResource CbBackgroundMainBrush}">
+        <Grid.RowDefinitions>
+            <!-- 0: Header/title bar -->
+            <RowDefinition Height="32"/>
+            <!-- 1: Tabs row (Home, Modify, etc. + Director/?/˅) -->
+            <RowDefinition Height="32"/>
+            <!-- 2–3: Ribbon card -->
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="6"/>
+            <!-- 4: Main body -->
+            <RowDefinition/>
+            <!-- 5: Status bar -->
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+
+        <!-- ====================== HEADER BAR ======================= -->
+        <!-- ========================================================= -->
+
+        <Border Grid.Row="0"
+                Background="{StaticResource CbBackgroundMainBrush}"
+                Padding="12,0"
+                MouseLeftButtonDown="HeaderBar_MouseLeftButtonDown">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left: app icon, title, quick access -->
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+
+                    <!-- App icon (frame glyph) -->
+                    <Image Width="29"
+                           Height="30"
+                           Margin="0,0,8,0"
+                           Source="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/App/cbframe_logo.png"
+                           SnapsToDevicePixels="True"/>
+
+                    <!-- Title + subtitle -->
+                    <StackPanel Orientation="Vertical"
+                                VerticalAlignment="Center"
+                                Margin="0,0,0,0">
+
+                        <!-- App name -->
+                        <TextBlock
+                                   FontFamily="AMGDT"
+                                   FontSize="18"
+                                   Foreground="{StaticResource CbTextPrimaryBrush}"
+                                   Margin="0,0,0,-2" Text="CB_FRAME" Width="113"/>
+
+                        <!-- Tagline -->
+                    </StackPanel>
+
+                    <!-- Quick Access toolbar -->
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Margin="24,0,0,0">
+
+                        <!-- New -->
+                        <Button Style="{StaticResource CbQuickAccessButtonStyle}"
+                                ToolTip="New model"
+                                Click="QuickAccessNew_Click">
+                            <Image Source="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/new.png"
+                                   Width="14" Height="14"/>
+                        </Button>
+
+                        <!-- Open -->
+                        <Button Style="{StaticResource CbQuickAccessButtonStyle}"
+                                ToolTip="Open model"
+                                Click="QuickAccessOpen_Click">
+                            <Image Source="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/open.png"
+                                   Width="14" Height="14"/>
+                        </Button>
+
+                        <!-- Save -->
+                        <Button Style="{StaticResource CbQuickAccessButtonStyle}"
+                                ToolTip="Save model"
+                                Click="QuickAccessSave_Click">
+                            <Image Source="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/save.png"
+                                   Width="14" Height="14"/>
+                        </Button>
+
+                        <!-- Undo -->
+                        <Button Style="{StaticResource CbQuickAccessButtonStyle}"
+                                ToolTip="Undo"
+                                Click="QuickAccessUndo_Click">
+                            <Image Source="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/undo.png"
+                                   Width="14" Height="14"/>
+                        </Button>
+
+                        <!-- Redo -->
+                        <Button Style="{StaticResource CbQuickAccessButtonStyle}"
+                                ToolTip="Redo"
+                                Click="QuickAccessRedo_Click">
+                            <Image Source="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/redo.png"
+                                   Width="14" Height="14"/>
+                        </Button>
+
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- RIGHT SIDE: Window Buttons -->
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right">
+
+                    <!-- MINIMIZE -->
+                    <Button Style="{StaticResource CbWindowHeaderButtonStyle}"
+                            Click="Minimize_Click">
+                        <TextBlock Text="─" FontSize="14"/>
+                    </Button>
+
+                    <!-- MAXIMIZE -->
+                    <Button Style="{StaticResource CbWindowHeaderButtonStyle}"
+                            Click="Maximize_Click">
+                        <Path Data="M0,0 L10,0 10,10 0,10 Z"
+                              StrokeThickness="1.3"
+                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+                    </Button>
+
+                    <!-- CLOSE -->
+                    <Button Style="{StaticResource CbWindowHeaderCloseButtonStyle}"
+                            Click="Close_Click">
+                        <TextBlock Text="✕" FontSize="12"/>
+                    </Button>
+
+                </StackPanel>
+            </Grid>
+
+        </Border>
+
+        <!-- ========================================================= -->
+        <!-- ======================= TABS ROW ======================== -->
+        <!-- ========================================================= -->
+
+        <Border Grid.Row="1"
+                Background="{StaticResource CbBackgroundMainBrush}"
+                Padding="12,0"
+                Margin="0,0,0,4">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- LEFT SIDE: Ribbon Tabs -->
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center">
+
+                    <ToggleButton Style="{StaticResource CbRibbonTabStyle}"
+                                  Content="Home"
+                                  IsChecked="True" FontSize="12"/>
+                    <ToggleButton Style="{StaticResource CbRibbonTabStyle}" Content="Modify" FontSize="12"/>
+                    <ToggleButton Style="{StaticResource CbRibbonTabStyle}" Content="View" FontSize="12"/>
+                    <ToggleButton Style="{StaticResource CbRibbonTabStyle}" Content="Drawing Tools" FontSize="12"/>
+                    <ToggleButton Style="{StaticResource CbRibbonTabStyle}" Content="Spreadsheets" FontSize="12"/>
+                    <ToggleButton Style="{StaticResource CbRibbonTabStyle}" Content="Advance" FontSize="12"/>
+                    <ToggleButton Style="{StaticResource CbRibbonTabStyle}" Content="Results" FontSize="12"/>
+
+                </StackPanel>
+
+                <!-- RIGHT SIDE: Director / Help / Collapse -->
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+
+                    <TextBlock Text="Director"
+                               VerticalAlignment="Center"
+                               Margin="0,0,12,0"
+                               Foreground="{StaticResource CbTextSecondaryBrush}" FontSize="12"/>
+
+                    <Button Style="{StaticResource CbQuickAccessButtonStyle}"
+                            Click="Help_Click">
+                        <TextBlock Text="?" FontWeight="Bold"/>
+                    </Button>
+
+                    <Button Style="{StaticResource CbQuickAccessButtonStyle}"
+                            Margin="4,0,0,0"
+                            Click="CollapseRibbon_Click">
+                        <TextBlock Text="˅" FontSize="12"/>
+                    </Button>
+
+                </StackPanel>
+
+            </Grid>
+        </Border>
+
+        <!-- ========================================================= -->
+        <!-- ===================== HOME RIBBON ======================= -->
+        <!-- ========================================================= -->
+
+        <!-- *** RIBBON MAIN CARD *** -->
+        <Border Grid.Row="2"
+                Grid.RowSpan="2"
+                Style="{StaticResource CbCardBorderStyle}"
+                Background="{StaticResource CbRibbonCardBrush}"
+                Margin="8,0,8,4">
+
+            <Grid Margin="10,4">
+                <!-- rows: 0 = icons row, 1 = group captions -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="22"/>
+                </Grid.RowDefinitions>
+
+                <!-- five ribbon groups (Model | Elements | Loads | Design | Misc) -->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="58*"/>
+                    <!-- Model -->
+                    <ColumnDefinition Width="272*"/>
+                    <!-- Draw Elements -->
+                    <ColumnDefinition Width="275*"/>
+                    <!-- Draw Loads -->
+                    <ColumnDefinition Width="180*"/>
+                    <!-- Design -->
+                    <ColumnDefinition Width="138*"/>
+                    <!-- Misc -->
+                </Grid.ColumnDefinitions>
+
+                <!-- === vertical separators between groups === -->
+                <Border Grid.Row="0" Grid.RowSpan="2"
+                        BorderBrush="{StaticResource CbRibbonSeparatorBrush}"
+                        BorderThickness="1,0,0,0" Grid.Column="1" />
+
+                <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"
+                        BorderBrush="{StaticResource CbRibbonSeparatorBrush}"
+                        BorderThickness="1,0,0,0" Margin="10,0,0,0" />
+
+                <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="3"
+                        BorderBrush="{StaticResource CbRibbonSeparatorBrush}"
+                        BorderThickness="1,0,0,0" Margin="0,0,1,0" />
+
+                <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="4"
+                        BorderBrush="{StaticResource CbRibbonSeparatorBrush}"
+                        BorderThickness="1,0,0,0" RenderTransformOrigin="0.553,0.511" />
+
+                <!-- ========================================================= -->
+                <!-- ====================== MODEL GROUP ======================= -->
+                <!-- ========================================================= -->
+
+                <Grid Grid.Row="0"
+                      Grid.Column="0"
+                      Grid.RowSpan="2"
+                      Margin="0,4,0,0">
+
+                    <Grid.ColumnDefinitions>
+                        <!-- left: Units / Info / Settings -->
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="84.64"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- LEFT: small commands (icon + text, vertical) -->
+                    <StackPanel Grid.Column="0"
+                                Orientation="Vertical"
+                                VerticalAlignment="Center"
+                                Grid.ColumnSpan="2"
+                                Height="122"
+                                Margin="-14,0,16,0">
+
+                        <!-- Units -->
+                        <Button Style="{StaticResource CbRibbonButtonStyle}"
+                                Tag="Units"
+                                Margin="0,0,0,4"
+                                HorizontalContentAlignment="Left"
+                                Click="HomeRibbonButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Resources/Icons/Ribbons/units.png"
+                                       Width="20" Height="20"
+                                       Margin="0,0,8,0"/>
+                                <TextBlock Text="Units"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Info -->
+                        <Button Style="{StaticResource CbRibbonButtonStyle}"
+                                Tag="Info"
+                                Margin="0,0,0,4"
+                                HorizontalContentAlignment="Left"
+                                Click="HomeRibbonButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Resources/Icons/Ribbons/info.png"
+                                       Width="20" Height="20"
+                                       Margin="0,0,8,0"/>
+                                <TextBlock Text="Info"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Settings -->
+                        <Button Style="{StaticResource CbRibbonButtonStyle}"
+                                Tag="Settings"
+                                HorizontalContentAlignment="Left"
+                                Click="HomeRibbonButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Resources/Icons/Ribbons/settings.png"
+                                       Width="20" Height="20"
+                                       Margin="0,0,8,0"/>
+                                <TextBlock Text="Settings"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
+                <!-- ========================================================= -->
+                <!-- ===================== DRAW ELEMENTS ===================== -->
+                <!-- ========================================================= -->
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="16,0,16,0"
+                            Height="80">
+
+                    <ToggleButton x:Name="ToolNodes"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Content="Nodes"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/nodes.png"
+                                  Margin="0,0,16,0"
+                                  Click="RibbonTool_Click"/>
+
+                    <ToggleButton x:Name="ToolMembers"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Content="Members"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/members.png"
+                                  Margin="0,0,16,0"
+                                  Click="RibbonTool_Click"/>
+
+                    <ToggleButton x:Name="ToolPlates"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/plates.png"
+                                  Content="Plates"
+                                  Margin="0,0,16,0"
+                                  Click="RibbonTool_Click"/>
+
+                    <ToggleButton x:Name="ToolWallPanels"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/wallpanels.png"
+                                  Content="Wall Panels"
+                                  Margin="0,0,16,0"
+                                  Click="RibbonTool_Click"/>
+
+                    <ToggleButton x:Name="ToolSolids"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/solids.png"
+                                  Content="Solids"
+                                  Margin="0,0,16,0"
+                                  Click="RibbonTool_Click"/>
+
+                    <ToggleButton x:Name="ToolBoundaryConditions"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/boundaryconditions.png"
+                                  Content="Boundary&#x0a;Conditions"
+                                  Margin="0,0,16,0"
+                                  Click="RibbonTool_Click"/>
+                </StackPanel>
+
+                <!-- ========================================================= -->
+                <!-- ======================= DRAW LOADS ====================== -->
+                <!-- ========================================================= -->
+
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="16,0,16,0"
+                            Height="72">
+
+                    <ToggleButton x:Name="ToolNodal"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/nodal.png"
+                                  Content="Nodal"
+                                  Margin="0,0,16,0"
+                                  Click="RibbonTool_Click"/>
+
+                    <ToggleButton x:Name="ToolLine"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/line.png"
+                                  Content="Line"
+                                  Margin="0,0,16,0"
+                                  Click="RibbonTool_Click"/>
+
+                    <ToggleButton x:Name="ToolPoint"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/point.png"
+                                  Content="Point"
+                                  Margin="0,0,16,0"
+                                  Click="RibbonTool_Click"/>
+
+                    <ToggleButton x:Name="ToolArea"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/area.png"
+                                  Content="Area"
+                                  Margin="0,0,16,0"
+                                  Click="RibbonTool_Click"/>
+
+                    <ToggleButton x:Name="ToolPlateSurface"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/platesurface.png"
+                                  Content="Plate&#x0a;Surface"
+                                  Margin="0,0,16,0"
+                                  Click="RibbonTool_Click"/>
+
+                    <ToggleButton x:Name="ToolWallSurface"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/wallsurface.png"
+                                  Content="Wall&#x0a;Surface"
+                                  Click="RibbonTool_Click"/>
+                </StackPanel>
+
+                <!-- ========================================================= -->
+                <!-- ======================== DESIGN ========================= -->
+                <!-- ========================================================= -->
+
+                <StackPanel Grid.Column="3"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="16,0,6,0"
+                            Height="72">
+
+                    <ToggleButton x:Name="ToolBasicLoadCases"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/basicloadcases.png"
+                                  Content="Basic&#x0a;Load Cases"
+                                  Margin="0,0,16,0"
+                                  Click="RibbonTool_Click"/>
+
+                    <ToggleButton x:Name="ToolLoadCombinations"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/loadcombinations.png"
+                                  Content="Load&#x0a;Combinations"
+                                  Margin="0,0,16,0"
+                                  Click="RibbonTool_Click"/>
+
+                    <ToggleButton x:Name="ToolWarningLog"
+                                Style="{StaticResource CbRibbonIconButtonStyle}"
+                                Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/warninglog.png"
+                                Content="Warning&#x0a;Log"
+                                Margin="0,0,16,0"
+                                Click="RibbonTool_Click"/>
+
+                    <ToggleButton x:Name="ToolSolve"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/solve.png"
+                                  Content="Solve"
+                                  Click="RibbonTool_Click"/>
+                </StackPanel>
+
+                <!-- ========================================================= -->
+                <!-- ========================== MISC ========================= -->
+                <!-- ========================================================= -->
+
+                <StackPanel Grid.Column="4"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="10,0,-9,0"
+                            Height="72">
+
+                    <ToggleButton x:Name="ToolQuickFind"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/quickfind.png"
+                                  Content="Quick&#x0a;Find"
+                                  Margin="0,0,16,0"
+                                  Click="RibbonTool_Click"/>
+
+                    <ToggleButton x:Name="ToolSelectByProperty"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/selectbyproperty.png"
+                                  Content="Select by&#x0a;Property"
+                                  Click="RibbonTool_Click"/>
+                </StackPanel>
+
+                <!-- ========================================================= -->
+                <!-- ======================= GROUP LABELS ==================== -->
+                <!-- ========================================================= -->
+
+                <TextBlock Grid.Row="1"
+                           Text="Model"
+                           Style="{StaticResource CbRibbonGroupHeaderTextStyle}"
+                           HorizontalAlignment="Left"
+                           Margin="35,4,0,0"
+                           Width="39" FontSize="13"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="1"
+                           Text="Draw Elements"
+                           Style="{StaticResource CbRibbonGroupHeaderTextStyle}"
+                           HorizontalAlignment="Center"
+                           Margin="0,4,0,0"
+                           Width="88" FontSize="13"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="2"
+                           Text="Draw Loads"
+                           Style="{StaticResource CbRibbonGroupHeaderTextStyle}"
+                           HorizontalAlignment="Center"
+                           Margin="0,4,0,0"
+                           Width="69" FontSize="13"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="3"
+                           Text="Design"
+                           Style="{StaticResource CbRibbonGroupHeaderTextStyle}"
+                           HorizontalAlignment="Center"
+                           Margin="0,4,0,0"
+                           Width="42" FontSize="13"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="4"
+                           Text="Misc"
+                           Style="{StaticResource CbRibbonGroupHeaderTextStyle}"
+                           HorizontalAlignment="Left"
+                           Margin="140,4,0,0"
+                           Width="30" FontSize="13"/>
+            </Grid>
+        </Border>
+
+        <!-- ========================================================= -->
+        <!-- ======================== MAIN BODY ====================== -->
+        <!-- ========================================================= -->
+
+        <Grid Grid.Row="4"
+              Margin="0,4,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="270"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="270"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- LEFT PANEL: Model Explorer -->
+            <Border Grid.Column="0"
+                    Style="{StaticResource CbCardBorderStyle}"
+                    Margin="8,0,4,5">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Text="Model Explorer"
+                               Style="{StaticResource CbCardHeaderTextStyle}" FontSize="16"/>
+
+                    <Border
+                            Style="{StaticResource CbInnerCardBorderStyle}" Margin="0,25,0,99" Grid.RowSpan="2">
+                        <StackPanel>
+                            <TextBlock Text="Properties"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource CbTextPrimaryBrush}"
+                                       Margin="0,0,0,8" FontSize="14"/>
+                            <TextBlock Text="(properties grid placeholder)"
+                                       Foreground="{StaticResource CbTextSecondaryBrush}"
+                                       FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="2"
+                            Style="{StaticResource CbInnerCardBorderStyle}" Margin="0,10,0,64">
+                        <StackPanel>
+                            <TextBlock Text="Project Browser"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource CbTextPrimaryBrush}"
+                                       Margin="0,0,0,8" FontSize="14"/>
+                            <TextBlock Text="(project browser placeholder)"
+                                       Foreground="{StaticResource CbTextSecondaryBrush}"
+                                       FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- CENTER PANEL: 3D View -->
+            <Border Grid.Column="1"
+                    Style="{StaticResource CbCardBorderStyle}"
+                    Margin="4,0,4,5" Background="#FF131415">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Text="3D View"
+                                   Style="{StaticResource CbCardHeaderTextStyle}"/>
+
+                        <Button Grid.Column="1"
+                                Style="{StaticResource CbPillButtonStyle}"
+                                Background="{StaticResource CbInnerCardBrush}">
+                            <TextBlock x:Name="ModePillText"
+                                       Text="Mode: Nodes"
+                                       Foreground="{StaticResource CbTextSecondaryBrush}"/>
+                        </Button>
+                    </Grid>
+
+                    <!-- 3D VIEWPORT -->
+
+                </Grid>
+            </Border>
+
+            <!-- RIGHT PANEL: Data Entry -->
+            <Border Grid.Column="2"
+                    Style="{StaticResource CbCardBorderStyle}"
+                    Margin="4,0,8,5">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Text="Data Entry"
+                               Style="{StaticResource CbCardHeaderTextStyle}" FontSize="16"/>
+
+                    <Border
+                            Style="{StaticResource CbInnerCardBorderStyle}" Margin="0,25,0,181" Grid.RowSpan="2">
+                        <StackPanel>
+                            <TextBlock Text="Spreadsheets"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource CbTextPrimaryBrush}"
+                                       Margin="0,0,0,8" FontSize="14"/>
+                            <TextBlock Text="(spreadsheet list placeholder)"
+                                       Foreground="{StaticResource CbTextSecondaryBrush}"
+                                       FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Grid.Row="2" Margin="0,8,0,0">
+                        <Border Style="{StaticResource CbInnerCardBorderStyle}"
+                                Height="80">
+                            <TextBlock Text="(data panel placeholder)"
+                                       Foreground="{StaticResource CbTextSecondaryBrush}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"/>
+                        </Border>
+                        <Button Margin="0,8,0,0"
+                                HorizontalAlignment="Stretch"
+                                Height="28"
+                                Background="{StaticResource CbAccentPurpleBrush}"
+                                Foreground="White"
+                                BorderThickness="0"
+                                Content="Action"/>
+                    </StackPanel>
+                </Grid>
+
+            </Border>
+        </Grid>
+
+        <!-- ========================================================= -->
+        <!-- ====================== STATUS BAR ======================= -->
+        <!-- ========================================================= -->
+
+        <Border Grid.Row="5"
+                Style="{StaticResource CbCardBorderStyle}"
+                Background="{StaticResource CbStatusCardBrush}"
+                BorderBrush="{StaticResource CbRibbonSeparatorBrush}"
+                CornerRadius="3,3,3,3"
+                Margin="8,4,8,6"
+                Padding="12,4">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Text="Ready"
+                           Foreground="{StaticResource CbTextPrimaryBrush}"/>
+
+                <TextBlock x:Name="StatusModeText"
+                           Grid.Column="1"
+                           Margin="24,0,0,0"
+                           Foreground="{StaticResource CbTextSecondaryBrush}">
+                    <Run Text="Mode: "/>
+                    <Run Text="Nodes" FontWeight="SemiBold"/>
+                </TextBlock>
+
+                <TextBlock Grid.Column="2"
+                           Margin="24,0,0,0"
+                           Foreground="{StaticResource CbTextSecondaryBrush}">
+                    <Run Text="Model: "/>
+                    <Run Text="OK" FontWeight="SemiBold"/>
+                </TextBlock>
+
+                <TextBlock Grid.Column="3"
+                           HorizontalAlignment="Center"
+                           Foreground="{StaticResource CbTextSecondaryBrush}">
+                    <Run Text="Solution: "/>
+                    <Run Text="None" FontWeight="SemiBold"/>
+                </TextBlock>
+
+                <TextBlock Grid.Column="4"
+                           Margin="24,0,0,0"
+                           Foreground="{StaticResource CbTextSecondaryBrush}">
+                    <Run Text="4 Node   3 Member"/>
+                </TextBlock>
+
+            </Grid>
+        </Border>
+
+    </Grid>
+</Window>

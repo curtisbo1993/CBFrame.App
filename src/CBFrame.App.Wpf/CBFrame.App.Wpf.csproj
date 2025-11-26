@@ -9,12 +9,146 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Icons\App\cbframe_logo.png" />
+    <None Remove="Resources\Icons\Ribbons\area.png" />
+    <None Remove="Resources\Icons\Ribbons\axes.png" />
+    <None Remove="Resources\Icons\Ribbons\basicloadcases.png" />
+    <None Remove="Resources\Icons\Ribbons\boundaryconditions.png" />
+    <None Remove="Resources\Icons\Ribbons\grid.png" />
+    <None Remove="Resources\Icons\Ribbons\info.png" />
+    <None Remove="Resources\Icons\Ribbons\labels.png" />
+    <None Remove="Resources\Icons\Ribbons\line.png" />
+    <None Remove="Resources\Icons\Ribbons\loadcombinations.png" />
+    <None Remove="Resources\Icons\Ribbons\members.png" />
+    <None Remove="Resources\Icons\Ribbons\new.png" />
+    <None Remove="Resources\Icons\Ribbons\nodal.png" />
+    <None Remove="Resources\Icons\Ribbons\nodes.png" />
+    <None Remove="Resources\Icons\Ribbons\open.png" />
+    <None Remove="Resources\Icons\Ribbons\plates.png" />
+    <None Remove="Resources\Icons\Ribbons\platesurface.png" />
+    <None Remove="Resources\Icons\Ribbons\point.png" />
+    <None Remove="Resources\Icons\Ribbons\print.png" />
+    <None Remove="Resources\Icons\Ribbons\quickfind.png" />
+    <None Remove="Resources\Icons\Ribbons\redo.png" />
+    <None Remove="Resources\Icons\Ribbons\save.png" />
+    <None Remove="Resources\Icons\Ribbons\selectbyproperty.png" />
+    <None Remove="Resources\Icons\Ribbons\settings.png" />
+    <None Remove="Resources\Icons\Ribbons\snap.png" />
+    <None Remove="Resources\Icons\Ribbons\solids.png" />
+    <None Remove="Resources\Icons\Ribbons\solve.png" />
+    <None Remove="Resources\Icons\Ribbons\undo.png" />
+    <None Remove="Resources\Icons\Ribbons\units.png" />
+    <None Remove="Resources\Icons\Ribbons\wallpanels.png" />
+    <None Remove="Resources\Icons\Ribbons\wallsurface.png" />
+    <None Remove="Resources\Icons\Ribbons\warninglog.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Fluent.Ribbon" Version="11.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CBFrame.Analysis\CBFrame.Analysis.csproj" />
     <ProjectReference Include="..\CBFrame.IO\CBFrame.IO.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\App\cbframe_logo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\area.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\axes.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\basicloadcases.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\boundaryconditions.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\grid.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\info.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\labels.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\line.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\loadcombinations.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\members.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\new.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\nodal.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\nodes.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\open.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\plates.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\platesurface.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\point.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\print.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\quickfind.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\redo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\save.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\selectbyproperty.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\settings.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\snap.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\solids.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\solve.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\undo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\units.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\wallpanels.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\wallsurface.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\Ribbons\warninglog.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>
