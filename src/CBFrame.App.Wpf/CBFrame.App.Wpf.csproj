@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="MeshBuilderStub.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\Icons\App\cbframe_logo.png" />
     <None Remove="Resources\Icons\Ribbons\area.png" />
     <None Remove="Resources\Icons\Ribbons\axes.png" />
@@ -45,6 +49,8 @@
 
   <ItemGroup>
     <PackageReference Include="Fluent.Ribbon" Version="11.0.1" />
+    <PackageReference Include="HelixToolkit.Wpf" Version="3.1.2" />
+    <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="3.1.2" />
   </ItemGroup>
 
   <ItemGroup>

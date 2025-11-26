@@ -1,11 +1,12 @@
-﻿using System;
-using System.ComponentModel;
-using System.Windows.Input;
-using CBFrame.App.Wpf.Infrastructure;
+﻿using CBFrame.App.Wpf.Infrastructure;
 using CBFrame.App.Wpf.Model;
 using CBFrame.App.Wpf.Services;
 using CBFrame.App.Wpf.Tools;
 using CBFrame.App.Wpf.ViewModels.Panels;
+using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 namespace CBFrame.App.Wpf.ViewModels
 {
@@ -110,7 +111,7 @@ namespace CBFrame.App.Wpf.ViewModels
         // ===== INotifyPropertyChanged =====
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private void OnPropertyChanged(string propertyName)
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

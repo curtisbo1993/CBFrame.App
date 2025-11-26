@@ -1,6 +1,7 @@
 ﻿<Window x:Class="CBFrame.App.Wpf.MainShellWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ht="http://helix-toolkit.org/wpf"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         Title="cb_FRAME – Structural Analysis"
         Height="1000"
@@ -622,7 +623,34 @@
                         </Button>
                     </Grid>
 
-                    <!-- 3D VIEWPORT -->
+                    <!-- 3D View panel content -->
+                    <ht:HelixViewport3D x:Name="MainViewport"
+                                        ZoomExtentsWhenLoaded="True"
+                                        ShowCoordinateSystem="True"
+                                        ShowViewCube="True"
+                                        IsHeadLightEnabled="True" Grid.RowSpan="2">
+
+                        <!-- Initial camera setup (property element) -->
+                        <ht:HelixViewport3D.Camera>
+                            <PerspectiveCamera Position="8,8,6"
+                                               LookDirection="-8,-8,-6"
+                                               UpDirection="0,0,1"
+                                               FieldOfView="45" />
+                        </ht:HelixViewport3D.Camera>
+
+                        <!-- Ground grid / working plane (Z = 0) -->
+                        <ht:GridLinesVisual3D Width="20"
+                                              Length="20"
+                                              MinorDistance="0.5"
+                                              MajorDistance="1"
+                                              Thickness="0.01"
+                                              Center="0,0,0"
+                                              Normal="0,0,1" />
+
+                        <!-- Basic lighting (follows camera) -->
+                        <ht:SunLight />
+
+                    </ht:HelixViewport3D>
 
                 </Grid>
             </Border>
@@ -717,19 +745,17 @@
                     <Run Text="OK" FontWeight="SemiBold"/>
                 </TextBlock>
 
-                <TextBlock Grid.Column="3"
+                <TextBlock x:Name="StatusSolutionText"
+                           Grid.Column="3"
                            HorizontalAlignment="Center"
-                           Foreground="{StaticResource CbTextSecondaryBrush}">
-                    <Run Text="Solution: "/>
-                    <Run Text="None" FontWeight="SemiBold"/>
-                </TextBlock>
+                           Foreground="{StaticResource CbTextSecondaryBrush}"
+                           Text="Solution: None"/>
 
-                <TextBlock Grid.Column="4"
+                <TextBlock x:Name="StatusCountsText"
+                           Grid.Column="4"
                            Margin="24,0,0,0"
-                           Foreground="{StaticResource CbTextSecondaryBrush}">
-                    <Run Text="4 Node   3 Member"/>
-                </TextBlock>
-
+                           Foreground="{StaticResource CbTextSecondaryBrush}"
+                           Text="0 Nodes   0 Members"/>
             </Grid>
         </Border>
 

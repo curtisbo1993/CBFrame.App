@@ -28,7 +28,7 @@ namespace CBFrame.App.Wpf.Services
             var cmd = new AddMemberCommand(_document, start, end);
             _undoRedoService.Push(cmd);
         }
-        public FrameDocument Document { get; private set; }
+        public FrameDocument Document { get; private set; } = null!;
 
         public void SetDocument(FrameDocument document)
         {
