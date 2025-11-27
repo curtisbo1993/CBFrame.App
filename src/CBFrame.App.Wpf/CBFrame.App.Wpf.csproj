@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="MainWindow.Legacy.xaml.cs" />
     <Compile Remove="MeshBuilderStub.cs" />
   </ItemGroup>
 
@@ -45,6 +46,10 @@
     <None Remove="Resources\Icons\Ribbons\wallpanels.png" />
     <None Remove="Resources\Icons\Ribbons\wallsurface.png" />
     <None Remove="Resources\Icons\Ribbons\warninglog.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="MainWindow.Legacy.xaml" />
   </ItemGroup>
 
   <ItemGroup>

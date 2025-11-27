@@ -3,27 +3,29 @@ using CBFrame.Core.Geometry;
 
 namespace CBFrame.Core.Loads
 {
-    /// <summary>
-    /// Concentrated load applied at a node.
-    /// Phase 2: only stores magnitudes.
-    /// </summary>
-    public class NodalLoad
+    public sealed class NodalLoad
     {
-        public int Id { get; set; }
+        public int NodeId { get; set; }
 
-        public Node Node { get; set; } = null!;
+        // Force components in global axes
+        public double Fx { get; set; }
+        public double Fy { get; set; }
+        public double Fz { get; set; }
 
+        // Moment components
+        public double Mx { get; set; }
+        public double My { get; set; }
+        public double Mz { get; set; }
+
+        /// <summary>
+        /// The load case this load belongs to.
+        /// </summary>
         public int LoadCaseId { get; set; }
 
-        /// <summary>
-        /// Direction for this load component (e.g. GlobalZ).
-        /// </summary>
-        public LoadDirection Direction { get; set; } = LoadDirection.GlobalZ;
-
-        /// <summary>
-        /// Load magnitude (force or moment) in model units.
-        /// Positive/negative meaning is defined later in analysis.
-        /// </summary>
-        public double Magnitude { get; set; }
+        public NodalLoad(int nodeId, int loadCaseId)
+        {
+            NodeId = nodeId;
+            LoadCaseId = loadCaseId;
+        }
     }
 }

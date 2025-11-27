@@ -2,24 +2,23 @@
 
 namespace CBFrame.Core.Loads
 {
-    /// <summary>
-    /// A load combination (e.g. 1.2D + 1.6L).
-    /// We only store factors here; no design logic yet.
-    /// </summary>
-    public class LoadCombination
+    public sealed class LoadCombination
     {
-        public int Id { get; set; }
+        public int Id { get; }
+        public string Name { get; set; }
+        public LoadCombinationType Type { get; set; }
 
-        public string Name { get; set; } = "Untitled Combination";
+        public List<LoadCombinationTerm> Terms { get; } = new();
 
-        /// <summary>
-        /// Map of LoadCaseId → factor.
-        /// </summary>
-        public IDictionary<int, double> Factors { get; } = new Dictionary<int, double>();
+        public bool IsActive { get; set; } = true;
 
-        /// <summary>
-        /// Optional description or code reference (e.g. "ASCE 7-16 2.3.2").
-        /// </summary>
-        public string? Description { get; set; }
+        public LoadCombination(int id, string name, LoadCombinationType type)
+        {
+            Id = id;
+            Name = name;
+            Type = type;
+        }
+
+        public override string ToString() => $"{Id}: {Name} ({Type})";
     }
 }

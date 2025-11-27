@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using CBFrame.Core.Model;
+using CBFrame.Core.Loads;
 
 namespace CBFrame.Analysis.LinearStatic
 {

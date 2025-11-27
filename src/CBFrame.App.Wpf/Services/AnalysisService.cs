@@ -42,7 +42,7 @@ namespace CBFrame.App.Wpf.Services
 
     /// <summary>
     /// High-level service that runs linear static analysis.
-    /// 
+    ///
     /// It is a thin wrapper around the core engine:
     /// CBFrame.Analysis.LinearStatic.LinearStaticAnalysis
     /// </summary>
@@ -79,7 +79,7 @@ namespace CBFrame.App.Wpf.Services
         /// <summary>
         /// Convenience helper:
         /// builds the global force vector from simple nodal loads.
-        /// 
+        ///
         /// nodalLoadProvider must return a double[3] for each node:
         /// [Fx, Fz, My] in global coordinates, matching DOF order [Ux, Uz, ThetaY].
         /// </summary>

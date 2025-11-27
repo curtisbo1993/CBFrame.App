@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ht="http://helix-toolkit.org/wpf"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        xmlns:views="clr-namespace:CBFrame.App.Wpf.Views"
         Title="cb_FRAME – Structural Analysis"
         Height="1000"
         Width="1900"
@@ -11,6 +12,7 @@
         WindowStyle="None"
               ResizeMode="CanResize"
         Loaded="MainWindow_OnLoaded">
+
 
     <!-- Custom chrome so we can draw our own header -->
     <shell:WindowChrome.WindowChrome>
@@ -234,15 +236,15 @@
 
                 <!-- five ribbon groups (Model | Elements | Loads | Design | Misc) -->
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="58*"/>
+                    <ColumnDefinition Width="115*"/>
                     <!-- Model -->
-                    <ColumnDefinition Width="272*"/>
+                    <ColumnDefinition Width="628*"/>
                     <!-- Draw Elements -->
-                    <ColumnDefinition Width="275*"/>
+                    <ColumnDefinition Width="545*"/>
                     <!-- Draw Loads -->
-                    <ColumnDefinition Width="180*"/>
+                    <ColumnDefinition Width="365*"/>
                     <!-- Design -->
-                    <ColumnDefinition Width="138*"/>
+                    <ColumnDefinition Width="185*"/>
                     <!-- Misc -->
                 </Grid.ColumnDefinitions>
 
@@ -338,6 +340,14 @@
                             VerticalAlignment="Center"
                             Margin="16,0,16,0"
                             Height="80">
+
+                    <!-- NEW: Select tool -->
+                    <ToggleButton x:Name="ToolSelect"
+                                  Style="{StaticResource CbRibbonIconButtonStyle}"
+                                  Content="Select"
+                                  Tag="pack://application:,,,/CBFrame.App.Wpf;component/Resources/Icons/Ribbons/select.png"
+                                  Margin="0,0,16,0"
+                                  Click="RibbonTool_Click"/>
 
                     <ToggleButton x:Name="ToolNodes"
                                   Style="{StaticResource CbRibbonIconButtonStyle}"
@@ -519,7 +529,7 @@
                            Style="{StaticResource CbRibbonGroupHeaderTextStyle}"
                            HorizontalAlignment="Center"
                            Margin="0,4,0,0"
-                           Width="69" FontSize="13"/>
+                           Width="70" FontSize="13"/>
 
                 <TextBlock Grid.Row="1" Grid.Column="3"
                            Text="Design"
@@ -532,7 +542,7 @@
                            Text="Misc"
                            Style="{StaticResource CbRibbonGroupHeaderTextStyle}"
                            HorizontalAlignment="Left"
-                           Margin="140,4,0,0"
+                           Margin="87,4,0,0"
                            Width="30" FontSize="13"/>
             </Grid>
         </Border>
@@ -687,10 +697,10 @@
                     <StackPanel Grid.Row="2" Margin="0,8,0,0">
                         <Border Style="{StaticResource CbInnerCardBorderStyle}"
                                 Height="80">
-                            <TextBlock Text="(data panel placeholder)"
-                                       Foreground="{StaticResource CbTextSecondaryBrush}"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Center"/>
+                            <!-- Keep this one as the real host -->
+                            <ContentControl x:Name="DataPanelHost"
+                                            Grid.Row="1"
+                                            Grid.Column="2" />
                         </Border>
                         <Button Margin="0,8,0,0"
                                 HorizontalAlignment="Stretch"
@@ -700,6 +710,11 @@
                                 BorderThickness="0"
                                 Content="Action"/>
                     </StackPanel>
+
+                    <!-- Rename or remove x:Name on the other -->
+                    <ContentControl x:Name="RightDockHost"
+                                    Grid.Row="2"
+                                    Grid.Column="2" />
                 </Grid>
 
             </Border>
@@ -726,37 +741,47 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
+                <!-- Left: Ready -->
                 <TextBlock Grid.Column="0"
-                           Text="Ready"
-                           Foreground="{StaticResource CbTextPrimaryBrush}"/>
+               Text="Ready"
+               Foreground="{StaticResource CbTextPrimaryBrush}"/>
 
+                <!-- Mode text (we already use this from code) -->
                 <TextBlock x:Name="StatusModeText"
-                           Grid.Column="1"
-                           Margin="24,0,0,0"
-                           Foreground="{StaticResource CbTextSecondaryBrush}">
-                    <Run Text="Mode: "/>
-                    <Run Text="Nodes" FontWeight="SemiBold"/>
+               Grid.Column="1"
+               Margin="24,0,0,0"
+               Foreground="{StaticResource CbTextSecondaryBrush}">
+        <Run Text="Mode: "/>
+        <Run Text="None" FontWeight="SemiBold"/>
                 </TextBlock>
 
+                <!-- Model: OK (static for now) -->
                 <TextBlock Grid.Column="2"
-                           Margin="24,0,0,0"
-                           Foreground="{StaticResource CbTextSecondaryBrush}">
-                    <Run Text="Model: "/>
-                    <Run Text="OK" FontWeight="SemiBold"/>
+               Margin="24,0,0,0"
+               Foreground="{StaticResource CbTextSecondaryBrush}">
+        <Run Text="Model: "/>
+        <Run Text="OK" FontWeight="SemiBold"/>
                 </TextBlock>
 
-                <TextBlock x:Name="StatusSolutionText"
-                           Grid.Column="3"
-                           HorizontalAlignment="Center"
-                           Foreground="{StaticResource CbTextSecondaryBrush}"
-                           Text="Solution: None"/>
+                <!-- Solution status (we will update the second Run) -->
+                <TextBlock Grid.Column="3"
+               HorizontalAlignment="Center"
+               Foreground="{StaticResource CbTextSecondaryBrush}">
+        <Run Text="Solution: "/>
+        <Run x:Name="StatusSolutionText"
+             Text="None"
+             FontWeight="SemiBold"/>
+                </TextBlock>
 
-                <TextBlock x:Name="StatusCountsText"
-                           Grid.Column="4"
-                           Margin="24,0,0,0"
-                           Foreground="{StaticResource CbTextSecondaryBrush}"
-                           Text="0 Nodes   0 Members"/>
+                <!-- Node/member counts (we will update this single Run) -->
+                <TextBlock Grid.Column="4"
+               Margin="24,0,0,0"
+               Foreground="{StaticResource CbTextSecondaryBrush}">
+        <Run x:Name="StatusCountsText"
+             Text="4 Nodes   3 Members"/>
+                </TextBlock>
             </Grid>
+
         </Border>
 
     </Grid>

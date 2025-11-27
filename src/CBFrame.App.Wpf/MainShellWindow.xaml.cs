@@ -6,10 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using CBFrame.App.Wpf.Views;
+using CBFrame.App.Wpf.ViewModels.Panels;
 
 namespace CBFrame.App.Wpf
 {
@@ -45,8 +48,158 @@ namespace CBFrame.App.Wpf
         SelectByProperty
     }
 
+    // ==========================================================
+    // CUSTOM MESHBUILDER FOR cb_FRAME  (no Helix MeshBuilder)
+    // ==========================================================
+    public class MeshBuilder
+    {
+        private readonly List<Point3D> _positions = new();
+        private readonly List<int> _triangles = new();
+
+        public void AddCylinder(Point3D p0, Point3D p1, double radius, int thetaDiv)
+        {
+            if (thetaDiv < 3) thetaDiv = 3;
+
+            Vector3D axis = p1 - p0;
+            double length = axis.Length;
+            if (length <= 1e-6) return;
+
+            axis.Normalize();
+
+            // Build an orthonormal basis (u, v, axis)
+            Vector3D arbitrary = Math.Abs(axis.X) < 0.9
+                ? new Vector3D(1, 0, 0)
+                : new Vector3D(0, 1, 0);
+
+            Vector3D u = Vector3D.CrossProduct(axis, arbitrary);
+            if (u.LengthSquared < 1e-6)
+            {
+                arbitrary = new Vector3D(0, 0, 1);
+                u = Vector3D.CrossProduct(axis, arbitrary);
+            }
+            u.Normalize();
+
+            Vector3D v = Vector3D.CrossProduct(axis, u);
+            v.Normalize();
+
+            int baseIndex = _positions.Count;
+
+            // Ring of vertices around p0 and p1
+            for (int i = 0; i <= thetaDiv; i++)
+            {
+                double angle = 2.0 * Math.PI * i / thetaDiv;
+                double cos = Math.Cos(angle);
+                double sin = Math.Sin(angle);
+                Vector3D offset = (u * cos + v * sin) * radius;
+
+                _positions.Add(p0 + offset); // bottom
+                _positions.Add(p1 + offset); // top
+            }
+
+            // Side faces
+            for (int i = 0; i < thetaDiv; i++)
+            {
+                int i0 = baseIndex + i * 2;
+                int i1 = baseIndex + i * 2 + 1;
+                int i2 = baseIndex + (i + 1) * 2;
+                int i3 = baseIndex + (i + 1) * 2 + 1;
+
+                AddTriangle(i0, i1, i3);
+                AddTriangle(i0, i3, i2);
+            }
+        }
+
+        // Nodes: we just draw little boxes (good enough visually)
+        public void AddSphere(Point3D center, double radius, int thetaDiv, int phiDiv)
+        {
+            AddBox(center, radius, radius, radius);
+        }
+
+        // Deflected shape: tube along a polyline
+        public void AddTube(IEnumerable<Point3D> path, double radius, int thetaDiv, bool isClosed)
+        {
+            if (path == null) return;
+
+            var pts = path.ToList();
+            if (pts.Count < 2) return;
+
+            for (int i = 0; i < pts.Count - 1; i++)
+            {
+                AddCylinder(pts[i], pts[i + 1], radius, thetaDiv);
+            }
+
+            if (isClosed && pts.Count > 2)
+            {
+                AddCylinder(pts[^1], pts[0], radius, thetaDiv);
+            }
+        }
+
+        public MeshGeometry3D ToMesh()
+        {
+            return new MeshGeometry3D
+            {
+                Positions = new Point3DCollection(_positions),
+                TriangleIndices = new Int32Collection(_triangles)
+            };
+        }
+
+        // ---------- helpers ----------
+
+        private void AddTriangle(int i0, int i1, int i2)
+        {
+            _triangles.Add(i0);
+            _triangles.Add(i1);
+            _triangles.Add(i2);
+        }
+
+        private void AddBox(Point3D center, double hx, double hy, double hz)
+        {
+            int baseIndex = _positions.Count;
+
+            var p000 = new Point3D(center.X - hx, center.Y - hy, center.Z - hz);
+            var p001 = new Point3D(center.X - hx, center.Y - hy, center.Z + hz);
+            var p010 = new Point3D(center.X - hx, center.Y + hy, center.Z - hz);
+            var p011 = new Point3D(center.X - hx, center.Y + hy, center.Z + hz);
+            var p100 = new Point3D(center.X + hx, center.Y - hy, center.Z - hz);
+            var p101 = new Point3D(center.X + hx, center.Y - hy, center.Z + hz);
+            var p110 = new Point3D(center.X + hx, center.Y + hy, center.Z - hz);
+            var p111 = new Point3D(center.X + hx, center.Y + hy, center.Z + hz);
+
+            _positions.Add(p000); // 0
+            _positions.Add(p001); // 1
+            _positions.Add(p010); // 2
+            _positions.Add(p011); // 3
+            _positions.Add(p100); // 4
+            _positions.Add(p101); // 5
+            _positions.Add(p110); // 6
+            _positions.Add(p111); // 7
+
+            void T(int a, int b, int c) => AddTriangle(baseIndex + a, baseIndex + b, baseIndex + c);
+
+            // front  (z+)
+            T(1, 5, 7); T(1, 7, 3);
+            // back   (z-)
+            T(0, 2, 6); T(0, 6, 4);
+            // left   (x-)
+            T(0, 1, 3); T(0, 3, 2);
+            // right  (x+)
+            T(4, 6, 7); T(4, 7, 5);
+            // top    (y+)
+            T(2, 3, 7); T(2, 7, 6);
+            // bottom (y-)
+            T(0, 4, 5); T(0, 5, 1);
+        }
+    }
+
     public partial class MainShellWindow : Window
     {
+
+        // Phase 7 – load panels
+        private readonly LoadCasesPanelView _loadCasesPanelView;
+        private readonly LoadCasesPanelViewModel _loadCasesPanelViewModel;
+        private readonly LoadCombinationsPanelView _loadCombinationsPanelView;
+        private readonly LoadCombinationsPanelViewModel _loadCombinationsPanelViewModel;
+
         // =========================
         //  TOOL STATE / ANALYSIS
         // =========================
@@ -59,6 +212,7 @@ namespace CBFrame.App.Wpf
 
         // Phase 6 – Step 5: analysis service for Solve
         private readonly AnalysisService _analysisService = new AnalysisService();
+        
 
         // =========================
         //  SIMPLE 3D MODEL STATE
@@ -82,12 +236,66 @@ namespace CBFrame.App.Wpf
         private readonly List<Node3D> _nodes = new();
         private readonly List<Member3D> _members = new();
 
-        // Viewport visuals (nullable, initialized in InitializeViewportVisuals)
+        // =======================================================
+        // FAKE DEFLECTED SHAPE — Phase 6 temporary visualization
+        // =======================================================
+
+        private List<Point3D> GetFakeDeflectedPoints(Member3D member)
+        {
+            double dx = member.End.Position.X - member.Start.Position.X;
+            double dy = member.End.Position.Y - member.Start.Position.Y;
+            double dz = member.End.Position.Z - member.Start.Position.Z;
+
+            double length = Math.Sqrt(dx * dx + dy * dy + dz * dz);
+            double scale = length * 0.05; // 5% deflection
+
+            var p0 = member.Start.Position;
+            var p1 = new Point3D(
+                member.End.Position.X,
+                member.End.Position.Y,
+                member.End.Position.Z + scale
+            );
+
+            return new List<Point3D> { p0, p1 };
+        }
+
+        private void RenderFakeDeflectedShape()
+        {
+            if (_deflectedShapeVisual == null)
+                return;
+
+            var group = new Model3DGroup();
+
+            foreach (var m in _members)
+            {
+                var pts = GetFakeDeflectedPoints(m);
+
+                var builder = new MeshBuilder();
+                builder.AddTube(
+                    pts,
+                    radius: 0.05,
+                    thetaDiv: 12,
+                    isClosed: false
+                );
+
+                var mesh = builder.ToMesh();
+                var material = Materials.Yellow;
+
+                group.Children.Add(new GeometryModel3D(mesh, material));
+            }
+
+            _deflectedShapeVisual.Content = group;
+        }
+
+        // Viewport visuals
         private ModelVisual3D? _frameVisual;           // undeformed frame (nodes + members)
-        private ModelVisual3D? _deflectedShapeVisual;  // reserved for Phase 6 deflected shapes
+        private ModelVisual3D? _deflectedShapeVisual;  // deflected shapes
 
         // Member drawing state (for FrameTool.Members)
         private Node3D? _pendingMemberStart;
+        // Selection state
+        private Node3D? _selectedNode;
+        private Member3D? _selectedMember;
 
         public MainShellWindow()
         {
@@ -105,6 +313,8 @@ namespace CBFrame.App.Wpf
             MainViewport.MouseLeftButtonDown += MainViewport_OnMouseLeftButtonDown;
 
             // wire the toggle buttons AFTER InitializeComponent
+            _toolButtons[FrameTool.Select] = ToolSelect;
+
             _toolButtons[FrameTool.Nodes] = ToolNodes;
             _toolButtons[FrameTool.Members] = ToolMembers;
             _toolButtons[FrameTool.Plates] = ToolPlates;
@@ -126,7 +336,28 @@ namespace CBFrame.App.Wpf
 
             _toolButtons[FrameTool.QuickFind] = ToolQuickFind;
             _toolButtons[FrameTool.SelectByProperty] = ToolSelectByProperty;
-        }
+
+            // ========== Phase 7: Load Cases panel ==========
+            _loadCasesPanelViewModel = new LoadCasesPanelViewModel();
+            _loadCasesPanelView = new LoadCasesPanelView
+            {
+                DataContext = _loadCasesPanelViewModel
+            };
+
+            // ========== Phase 7: Load Combinations panel ==========
+            _loadCombinationsPanelViewModel = new LoadCombinationsPanelViewModel(_loadCasesPanelViewModel.LoadCases);
+            _loadCombinationsPanelView = new LoadCombinationsPanelView
+            {
+                DataContext = _loadCombinationsPanelViewModel
+            };
+
+            if (DataPanelHost != null)
+            {
+                // Start hidden – we show the appropriate panel based on the active tool
+                DataPanelHost.Content = null;
+                DataPanelHost.Visibility = Visibility.Collapsed;
+            }
+        }   // <-- closes MainShellWindow constructor
 
         // ✅ Make maximized window respect the taskbar
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
@@ -202,6 +433,9 @@ namespace CBFrame.App.Wpf
 
         private FrameTool GetToolFromButton(ButtonBase btn)
         {
+            // Select
+            if (btn == ToolSelect) return FrameTool.Select;
+
             // Draw Elements
             if (btn == ToolNodes) return FrameTool.Nodes;
             if (btn == ToolMembers) return FrameTool.Members;
@@ -296,6 +530,34 @@ namespace CBFrame.App.Wpf
             if (e.Key == Key.Escape)
             {
                 CancelActiveTool();
+                return;
+            }
+
+            // Delete key = delete current selection (member first, then node)
+            if (e.Key == Key.Delete)
+            {
+                bool deleted = false;
+
+                if (_selectedMember != null)
+                {
+                    _members.Remove(_selectedMember);
+                    _selectedMember = null;
+                    deleted = true;
+                }
+                else if (_selectedNode != null)
+                {
+                    _members.RemoveAll(m => m.Start == _selectedNode || m.End == _selectedNode);
+                    _nodes.Remove(_selectedNode);
+                    _selectedNode = null;
+                    deleted = true;
+                }
+
+                if (deleted)
+                {
+                    RenderModelToViewport();
+                    UpdateStatusCounts();
+                    StatusBarMessage("Deleted selection.");
+                }
             }
         }
 
@@ -306,23 +568,35 @@ namespace CBFrame.App.Wpf
 
             string label = GetToolDisplayName(tool);
 
-            // Update 3D View pill
             if (ModePillText != null)
-            {
                 ModePillText.Text = $"Mode: {label}";
-            }
 
-            // Update status bar mode text
             if (StatusModeText != null)
-            {
                 StatusModeText.Text = $"Mode: {label}";
-            }
 
-            // Update window title
             Title = $"cb_FRAME – {label}";
 
-            // Update checked state of all tool buttons
             UpdateToolButtonChecks(tool);
+
+            // Phase 7 – show the appropriate load panel
+            if (DataPanelHost != null)
+            {
+                if (tool == FrameTool.BasicLoadCases)
+                {
+                    DataPanelHost.Content = _loadCasesPanelView;
+                    DataPanelHost.Visibility = Visibility.Visible;
+                }
+                else if (tool == FrameTool.LoadCombinations)
+                {
+                    DataPanelHost.Content = _loadCombinationsPanelView;
+                    DataPanelHost.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    DataPanelHost.Content = null;
+                    DataPanelHost.Visibility = Visibility.Collapsed;
+                }
+            }
         }
 
         private void UpdateToolButtonChecks(FrameTool active)
@@ -340,9 +614,9 @@ namespace CBFrame.App.Wpf
             ActivateTool(FrameTool.None);
         }
 
-        // ===========================
+        // =========================
         // Quick Access toolbar stubs
-        // ===========================
+        // =========================
 
         private void QuickAccessNew_Click(object sender, RoutedEventArgs e)
         {
@@ -394,11 +668,13 @@ namespace CBFrame.App.Wpf
 
         private void RunSolveAnalysis()
         {
+            StatusBarMessage("Running analysis (demo)…");
+
+            // OLD temporary visuals – turn them OFF for now
+            // RenderFakeDeflectedShape();
+
             try
             {
-                // ----------------------------------------------
-                // 1) Call the analysis engine (still placeholder)
-                // ----------------------------------------------
                 int nodeCount = Math.Max(_nodes.Count, 1);
 
                 var dofMapper = new DofMapper(
@@ -413,10 +689,20 @@ namespace CBFrame.App.Wpf
                     dofMapper,
                     globalForces);
 
-                // ----------------------------------------------
-                // 2) Build a FAKE deflected shape from _nodes/_members
-                //    (just to prove the pipeline + drawing works)
-                // ----------------------------------------------
+                // Also comment this line out for now:
+                // UpdateDeflectedShape(deflectedNodePositions, deflectedMembers, exaggeration);
+
+                if (StatusSolutionText != null)
+                    StatusSolutionText.Text = "Linear Static (demo)";
+
+                StatusBarMessage("Analysis finished (demo solve).");
+
+                MessageBox.Show(
+                    "Solve tool wired successfully.\n" +
+                    "Real deflected shapes will be shown once the analysis engine is fully wired.",
+                    "Analysis",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
 
                 if (_nodes.Count == 0 || _members.Count == 0)
                 {
@@ -425,12 +711,14 @@ namespace CBFrame.App.Wpf
                         "Analysis",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
+
+                    if (StatusSolutionText != null)
+                        StatusSolutionText.Text = "Linear Static (no elements)";
+
                     return;
                 }
 
-                // Simple fake: push nodes down in -Y based on their X position
-                // so you see a “bent” shape above the original members.
-                double scale = -0.05; // tweak to taste
+                double scale = -0.05; // fake vertical deflection scale
 
                 var deflectedNodePositions = _nodes
                     .OrderBy(n => n.Id)
@@ -445,17 +733,20 @@ namespace CBFrame.App.Wpf
                     .Select(m => (StartNodeId: m.Start.Id, EndNodeId: m.End.Id))
                     .ToList();
 
-                // exaggeration factor not used inside yet, but keep for later
-                double exaggeration = 1.0;
+                double exaggeration = 2.5;
 
                 UpdateDeflectedShape(
                     deflectedNodePositions,
                     deflectedMembers,
                     exaggeration);
 
-                // ----------------------------------------------
-                // 3) Notify user
-                // ----------------------------------------------
+                if (StatusSolutionText != null)
+                {
+                    StatusSolutionText.Text = "Linear Static (demo)";
+                }
+
+                StatusBarMessage("Analysis finished (demo solve).");
+
                 MessageBox.Show(
                     "Solve tool wired successfully.\n" +
                     "Fake deflected shape has been drawn (orange overlay).",
@@ -465,6 +756,11 @@ namespace CBFrame.App.Wpf
             }
             catch (Exception ex)
             {
+                if (StatusSolutionText != null)
+                {
+                    StatusSolutionText.Text = "Error";
+                }
+
                 MessageBox.Show(
                     $"Analysis failed: {ex.Message}",
                     "Analysis Error",
@@ -482,11 +778,14 @@ namespace CBFrame.App.Wpf
             if (MainViewport == null)
                 return;
 
+            MainViewport.Children.Clear();
+
             _frameVisual = new ModelVisual3D();
             _deflectedShapeVisual = new ModelVisual3D();
 
-            MainViewport.Children.Add(_frameVisual);
-            MainViewport.Children.Add(_deflectedShapeVisual);
+            MainViewport.Children.Add(_deflectedShapeVisual);  // draw behind
+            MainViewport.Children.Add(_frameVisual);           // draw on top
+
         }
 
         private void BuildTestModel()
@@ -494,10 +793,12 @@ namespace CBFrame.App.Wpf
             _nodes.Clear();
             _members.Clear();
 
-            var n1 = new Node3D { Id = 1, Position = new Point3D(0, 0, 0) };
-            var n2 = new Node3D { Id = 2, Position = new Point3D(4, 0, 0) };
-            var n3 = new Node3D { Id = 3, Position = new Point3D(0, 0, 3) };
-            var n4 = new Node3D { Id = 4, Position = new Point3D(4, 0, 3) };
+            const double liftY = 1.0;
+
+            var n1 = new Node3D { Id = 1, Position = new Point3D(0, liftY, 0) };
+            var n2 = new Node3D { Id = 2, Position = new Point3D(4, liftY, 0) };
+            var n3 = new Node3D { Id = 3, Position = new Point3D(0, liftY, 3) };
+            var n4 = new Node3D { Id = 4, Position = new Point3D(4, liftY, 3) };
 
             _nodes.AddRange(new[] { n1, n2, n3, n4 });
 
@@ -515,52 +816,100 @@ namespace CBFrame.App.Wpf
 
             var group = new Model3DGroup();
 
-            // ✅ Use HelixToolkit's WPF MeshBuilder (Point3D + double)
-            var builder = new HelixToolkit.Wpf.MeshBuilder();
+            // === Members: normal + selected ===
+            var memberBuilder = new MeshBuilder();
+            var memberSelectedBuilder = new MeshBuilder();
 
-            const double memberRadius = 0.05;
+            const double memberRadius = 0.12;
+
             foreach (var m in _members)
             {
-                builder.AddCylinder(m.Start.Position, m.End.Position, memberRadius, 16);
+                bool isSelected = (m == _selectedMember);
+                var b = isSelected ? memberSelectedBuilder : memberBuilder;
+                b.AddCylinder(m.Start.Position, m.End.Position, memberRadius, 16);
             }
 
-            const double nodeRadius = 0.08;
+            // Normal members (cyan)
+            var memberGeom = memberBuilder.ToMesh();
+            if (memberGeom != null && memberGeom.Positions != null && memberGeom.Positions.Count > 0)
+            {
+                var memberMat = MaterialHelper.CreateMaterial(Color.FromRgb(0, 220, 255)); // cyan
+                group.Children.Add(new GeometryModel3D(memberGeom, memberMat) { BackMaterial = memberMat });
+            }
+
+            // Selected members (yellow)
+            var memberSelGeom = memberSelectedBuilder.ToMesh();
+            if (memberSelGeom != null && memberSelGeom.Positions != null && memberSelGeom.Positions.Count > 0)
+            {
+                var memberSelMat = MaterialHelper.CreateMaterial(Colors.Yellow);
+                group.Children.Add(new GeometryModel3D(memberSelGeom, memberSelMat) { BackMaterial = memberSelMat });
+            }
+
+            // === Nodes: normal + selected ===
+            var nodeBuilder = new MeshBuilder();
+            var nodeSelectedBuilder = new MeshBuilder();
+
+            const double nodeRadius = 0.15;
+
             foreach (var n in _nodes)
             {
-                builder.AddSphere(n.Position, nodeRadius, 12, 12);
+                bool isSelected = (n == _selectedNode);
+                var b = isSelected ? nodeSelectedBuilder : nodeBuilder;
+                b.AddSphere(n.Position, nodeRadius, 12, 12);
             }
 
-            var geometry = builder.ToMesh();  // MeshGeometry3D (WPF)
-            var material = MaterialHelper.CreateMaterial(Colors.SteelBlue);
-            var model = new GeometryModel3D(geometry, material)
+            // Normal nodes (cyan)
+            var nodeGeom = nodeBuilder.ToMesh();
+            if (nodeGeom != null && nodeGeom.Positions != null && nodeGeom.Positions.Count > 0)
             {
-                BackMaterial = material
-            };
+                var nodeMat = MaterialHelper.CreateMaterial(Color.FromRgb(0, 220, 255));
+                group.Children.Add(new GeometryModel3D(nodeGeom, nodeMat) { BackMaterial = nodeMat });
+            }
 
-            group.Children.Add(model);
+            // Selected nodes (yellow)
+            var nodeSelGeom = nodeSelectedBuilder.ToMesh();
+            if (nodeSelGeom != null && nodeSelGeom.Positions != null && nodeSelGeom.Positions.Count > 0)
+            {
+                var nodeSelMat = MaterialHelper.CreateMaterial(Colors.Yellow);
+                group.Children.Add(new GeometryModel3D(nodeSelGeom, nodeSelMat) { BackMaterial = nodeSelMat });
+            }
+
             _frameVisual.Content = group;
 
             MainViewport.ZoomExtents();
             UpdateStatusCounts();
+            Dispatcher.InvokeAsync(() => MainViewport.ZoomExtents());
         }
 
         public void UpdateDeflectedShape(
-                    IEnumerable<Point3D> deflectedNodePositions,
-                    IEnumerable<(int StartNodeId, int EndNodeId)> deflectedMembers,
-                    double exaggerationFactor)
+            IEnumerable<Point3D> deflectedNodePositions,
+            IEnumerable<(int StartNodeId, int EndNodeId)> deflectedMembers,
+            double exaggerationFactor)
         {
             if (_deflectedShapeVisual == null)
                 return;
 
             var group = new Model3DGroup();
+            var builder = new MeshBuilder();
 
-            // ✅ Use HelixToolkit's WPF MeshBuilder (Point3D + double)
-            var builder = new HelixToolkit.Wpf.MeshBuilder();
+            // VERY THICK
+            const double deflectedRadius = 0.15;
 
-            const double deflectedRadius = 0.03;
+            // BRIGHT color (impossible to miss)
+            var overlayColor = Color.FromRgb(255, 0, 255); // MAGENTA
+            var material = MaterialHelper.CreateMaterial(overlayColor);
 
+            // Push the deflected shape forward in +Z so it floats in front
             var nodeMap = deflectedNodePositions
-                .Select((p, index) => new { Id = index + 1, Position = p })
+                .Select((p, index) => new
+                {
+                    Id = index + 1,
+                    Position = new Point3D(
+                        p.X,
+                        p.Y,
+                        p.Z + 2.0 // big offset: FLOAT THE SHAPE FORWARD
+                    )
+                })
                 .ToDictionary(x => x.Id, x => x.Position);
 
             foreach (var (startId, endId) in deflectedMembers)
@@ -568,12 +917,11 @@ namespace CBFrame.App.Wpf
                 if (!nodeMap.TryGetValue(startId, out var p0)) continue;
                 if (!nodeMap.TryGetValue(endId, out var p1)) continue;
 
-                builder.AddTube(new[] { p0, p1 }, deflectedRadius, 8, false);
+                builder.AddTube(new[] { p0, p1 }, deflectedRadius, 16, false);
             }
 
-            var geometry = builder.ToMesh();  // MeshGeometry3D
-            var material = MaterialHelper.CreateMaterial(Colors.OrangeRed);
-            var model = new GeometryModel3D(geometry, material)
+            var geom = builder.ToMesh();
+            var model = new GeometryModel3D(geom, material)
             {
                 BackMaterial = material
             };
@@ -632,7 +980,6 @@ namespace CBFrame.App.Wpf
 
             if (_pendingMemberStart == null)
             {
-                // First click – start node
                 _pendingMemberStart = node;
             }
             else
@@ -652,7 +999,7 @@ namespace CBFrame.App.Wpf
                     UpdateStatusCounts();
                 }
 
-                _pendingMemberStart = null; // done
+                _pendingMemberStart = null;
             }
         }
 
@@ -661,8 +1008,29 @@ namespace CBFrame.App.Wpf
             var node = HitTestNearestNode(screenPos);
             if (node != null)
             {
-                // TODO: visual highlight, property panel binding, etc.
-                // StatusBarMessage($"Selected node {node.Id}");
+                _selectedNode = node;
+                _selectedMember = null;
+                StatusBarMessage($"Selected node {node.Id}");
+                RenderModelToViewport();
+                return;
+            }
+
+            var member = HitTestNearestMember(screenPos);
+            if (member != null)
+            {
+                _selectedMember = member;
+                _selectedNode = null;
+                StatusBarMessage($"Selected member {member.Id}");
+                RenderModelToViewport();
+                return;
+            }
+
+            if (_selectedNode != null || _selectedMember != null)
+            {
+                _selectedNode = null;
+                _selectedMember = null;
+                StatusBarMessage("Selection cleared");
+                RenderModelToViewport();
             }
         }
 
@@ -683,13 +1051,8 @@ namespace CBFrame.App.Wpf
             return result;
         }
 
-        /// <summary>
-        /// Very simple hit test: project the click onto the working plane (Z = 0)
-        /// and pick the node whose 3D position is closest to that world point.
-        /// </summary>
         private Node3D? HitTestNearestNode(Point screenPos, double maxWorldDistance = 0.25)
         {
-            // Convert the 2D screen point into a 3D point on Z = 0
             var worldPoint = ProjectToWorkingPlane(screenPos);
             if (worldPoint == null)
                 return null;
@@ -710,7 +1073,56 @@ namespace CBFrame.App.Wpf
                     bestNode = node;
                 }
             }
+
             return bestNode;
+        }
+
+        private Member3D? HitTestNearestMember(Point screenPos, double maxWorldDistance = 0.25)
+        {
+            var worldPoint = ProjectToWorkingPlane(screenPos);
+            if (worldPoint == null)
+                return null;
+
+            Member3D? bestMember = null;
+            double bestDist = maxWorldDistance;
+
+            foreach (var member in _members)
+            {
+                var p0 = member.Start.Position;
+                var p1 = member.End.Position;
+
+                var vx = p1.X - p0.X;
+                var vy = p1.Y - p0.Y;
+                var vz = p1.Z - p0.Z;
+
+                var wx = worldPoint.Value.X - p0.X;
+                var wy = worldPoint.Value.Y - p0.Y;
+                var wz = worldPoint.Value.Z - p0.Z;
+
+                double segLen2 = vx * vx + vy * vy + vz * vz;
+                if (segLen2 < 1e-6)
+                    continue;
+
+                double t = (vx * wx + vy * wy + vz * wz) / segLen2;
+                t = Math.Max(0.0, Math.Min(1.0, t));
+
+                var cx = p0.X + t * vx;
+                var cy = p0.Y + t * vy;
+                var cz = p0.Z + t * vz;
+
+                var dx = worldPoint.Value.X - cx;
+                var dy = worldPoint.Value.Y - cy;
+                var dz = worldPoint.Value.Z - cz;
+                double dist = Math.Sqrt(dx * dx + dy * dy + dz * dz);
+
+                if (dist < bestDist)
+                {
+                    bestDist = dist;
+                    bestMember = member;
+                }
+            }
+
+            return bestMember;
         }
 
         private void UpdateModelCounts()
@@ -725,4 +1137,3 @@ namespace CBFrame.App.Wpf
         }
     }
 }
-
