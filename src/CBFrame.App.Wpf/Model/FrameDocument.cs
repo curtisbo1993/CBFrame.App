@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using CBFrame.App.Wpf.ViewModels.Panels;
+using System.Collections.ObjectModel;
 using System.Windows.Media.Media3D;
 
 namespace CBFrame.App.Wpf.Model

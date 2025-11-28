@@ -61,6 +61,8 @@
   <ItemGroup>
     <ProjectReference Include="..\CBFrame.Analysis\CBFrame.Analysis.csproj" />
     <ProjectReference Include="..\CBFrame.IO\CBFrame.IO.csproj" />
+    <ProjectReference Include="..\CBFrame.MaterialsDb\CBFrame.MaterialsDb.csproj" />
+    <ProjectReference Include="..\CBFrame.SectionsDb\CBFrame.SectionsDb.csproj" />
   </ItemGroup>
 
   <ItemGroup>

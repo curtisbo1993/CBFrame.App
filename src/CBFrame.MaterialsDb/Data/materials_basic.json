@@ -1,0 +1,32 @@
+{
+  "units": {
+    "stress": "ksi",
+    "density": "kips/ft3"
+  },
+  "materials": [
+    {
+      "Id": "STEEL_A992_FY50",
+      "Name": "A992 Steel Fy=50 ksi",
+      "Kind": "Steel",
+      "Grade": "ASTM A992",
+      "E": 29000.0,
+      "G": 11200.0,
+      "Density": 0.490,
+      "Poisson": 0.3,
+      "Fy": 50.0,
+      "Fu": 65.0
+    },
+    {
+      "Id": "CONC_NORMAL_4K",
+      "Name": "Normalweight Concrete f'c = 4 ksi",
+      "Kind": "Concrete",
+      "Grade": "ASTM A615 / ACI 318",
+      "E": 3600.0,
+      "G": 1500.0,
+      "Density": 0.150,
+      "Poisson": 0.2,
+      "Fy": 0.0,
+      "Fu": 0.0
+    }
+  ]
+}

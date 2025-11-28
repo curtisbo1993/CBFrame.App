@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using CBFrame.App.Wpf.Views;
 using CBFrame.App.Wpf.ViewModels.Panels;
+using CBFrame.Core.Loads;
 
 namespace CBFrame.App.Wpf
 {
@@ -357,6 +358,7 @@ namespace CBFrame.App.Wpf
                 DataPanelHost.Content = null;
                 DataPanelHost.Visibility = Visibility.Collapsed;
             }
+
         }   // <-- closes MainShellWindow constructor
 
         // ✅ Make maximized window respect the taskbar

@@ -1,16 +1,58 @@
-﻿<!-- PropertiesPanelView.xaml -->
-<UserControl x:Class="CBFrame.App.Wpf.Views.PropertiesPanelView"
+﻿<UserControl x:Class="CBFrame.App.Wpf.Views.PropertiesPanelView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
     <Border Background="{DynamicResource PanelBackgroundBrush}">
         <StackPanel Margin="8">
             <TextBlock Text="Properties"
-                       Foreground="{DynamicResource PanelForegroundBrush}"
-                       FontWeight="SemiBold" />
-            <TextBlock Text="{Binding SelectedObject}" 
-                       Foreground="{DynamicResource PanelForegroundBrush}"
-                       Margin="4" />            
-            <TextBlock Text="{Binding SelectedObject}" />
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource CbTextPrimaryBrush}"
+                       Margin="0,0,0,8"
+                       FontSize="14" />
+
+            <!-- Member information - bound through the PropertiesViewModel -->
+            <StackPanel>
+                <TextBlock Text="{Binding SelectedMember.Id, StringFormat=Member {0}}"
+                           Foreground="{DynamicResource PanelForegroundBrush}"
+                           Margin="0,0,0,4" />
+
+                <TextBlock Text="{Binding SelectedMember.Start, StringFormat=Start: {0}}"
+                           Foreground="{DynamicResource PanelForegroundBrush}"
+                           Margin="0,0,0,2" />
+                <TextBlock Text="{Binding SelectedMember.End, StringFormat=End: {0}}"
+                           Foreground="{DynamicResource PanelForegroundBrush}"
+                           Margin="0,0,0,8" />
+
+                <!-- Section row -->
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                    <TextBlock Text="Section:"
+                               Width="70"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource PanelForegroundBrush}" />
+                    <TextBlock Text="{Binding MemberSectionDisplay}"
+                               VerticalAlignment="Center"
+                               Margin="4,0,8,0"
+                               Foreground="{DynamicResource PanelForegroundBrush}" />
+                    <Button Content="Select…"
+                            Command="{Binding SelectMemberSectionCommand}"
+                            Padding="8,2" />
+                </StackPanel>
+
+                <!-- Material row -->
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Material:"
+                               Width="70"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource PanelForegroundBrush}" />
+                    <TextBlock Text="{Binding MemberMaterialDisplay}"
+                               VerticalAlignment="Center"
+                               Margin="4,0,8,0"
+                               Foreground="{DynamicResource PanelForegroundBrush}" />
+                    <Button Content="Select…"
+                            Command="{Binding SelectMemberMaterialCommand}"
+                            Padding="8,2" />
+                </StackPanel>
+            </StackPanel>
         </StackPanel>
     </Border>
 </UserControl>

@@ -561,8 +561,8 @@
 
             <!-- LEFT PANEL: Model Explorer -->
             <Border Grid.Column="0"
-                    Style="{StaticResource CbCardBorderStyle}"
-                    Margin="8,0,4,5">
+        Style="{StaticResource CbCardBorderStyle}"
+        Margin="8,0,4,5">
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -572,32 +572,29 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0"
-                               Text="Model Explorer"
-                               Style="{StaticResource CbCardHeaderTextStyle}" FontSize="16"/>
+                   Text="Model Explorer"
+                   Style="{StaticResource CbCardHeaderTextStyle}"
+                   FontSize="16"/>
 
-                    <Border
-                            Style="{StaticResource CbInnerCardBorderStyle}" Margin="0,25,0,99" Grid.RowSpan="2">
-                        <StackPanel>
-                            <TextBlock Text="Properties"
-                                       FontWeight="SemiBold"
-                                       Foreground="{StaticResource CbTextPrimaryBrush}"
-                                       Margin="0,0,0,8" FontSize="14"/>
-                            <TextBlock Text="(properties grid placeholder)"
-                                       Foreground="{StaticResource CbTextSecondaryBrush}"
-                                       FontSize="12"/>
-                        </StackPanel>
+                    <Border Grid.Row="1"
+                            Style="{StaticResource CbInnerCardBorderStyle}"
+                            Margin="0,25,0,99"
+                            Grid.RowSpan="2">
+                        <views:PropertiesPanelView />
                     </Border>
 
                     <Border Grid.Row="2"
-                            Style="{StaticResource CbInnerCardBorderStyle}" Margin="0,10,0,64">
+                Style="{StaticResource CbInnerCardBorderStyle}"
+                Margin="0,10,0,64">
                         <StackPanel>
                             <TextBlock Text="Project Browser"
-                                       FontWeight="SemiBold"
-                                       Foreground="{StaticResource CbTextPrimaryBrush}"
-                                       Margin="0,0,0,8" FontSize="14"/>
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource CbTextPrimaryBrush}"
+                           Margin="0,0,0,8"
+                           FontSize="14"/>
                             <TextBlock Text="(project browser placeholder)"
-                                       Foreground="{StaticResource CbTextSecondaryBrush}"
-                                       FontSize="12"/>
+                           Foreground="{StaticResource CbTextSecondaryBrush}"
+                           FontSize="12"/>
                         </StackPanel>
                     </Border>
                 </Grid>

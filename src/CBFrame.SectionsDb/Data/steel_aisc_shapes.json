@@ -1,0 +1,52 @@
+{
+  "database": "AISC",
+  "units": {
+    "length": "in",
+    "area": "in2",
+    "inertia": "in4",
+    "modulus": "in3",
+    "weightPerLength": "lb/ft"
+  },
+  "shapes": [
+    {
+      "Id": "AISC.W.W12X26",
+      "Name": "W12x26",
+      "ShapeType": "WideFlange",
+      "Database": "AISC",
+      "DefaultMaterialId": "STEEL_A992_FY50",
+      "Area": 7.64,
+      "Ix": 174.0,
+      "Iy": 15.1,
+      "J": 0.547,
+      "Sx": 29.1,
+      "Sy": 4.27,
+      "Zx": 34.0,
+      "Zy": 6.30,
+      "WeightPerLength": 26.0,
+      "Depth": 12.2,
+      "FlangeWidth": 6.49,
+      "WebThickness": 0.26,
+      "FlangeThickness": 0.4
+    },
+    {
+      "Id": "AISC.W.W18X35",
+      "Name": "W18x35",
+      "ShapeType": "WideFlange",
+      "Database": "AISC",
+      "DefaultMaterialId": "STEEL_A992_FY50",
+      "Area": 10.3,
+      "Ix": 409.0,
+      "Iy": 26.5,
+      "J": 0.86,
+      "Sx": 45.4,
+      "Sy": 6.88,
+      "Zx": 54.1,
+      "Zy": 9.67,
+      "WeightPerLength": 35.0,
+      "Depth": 17.7,
+      "FlangeWidth": 7.01,
+      "WebThickness": 0.28,
+      "FlangeThickness": 0.44
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "units": "US",
+  "materials": [
+    {
+      "id": "ASTM_A992",
+      "name": "A992 Fy=50 ksi",
+      "materialType": "Steel",
+      "e": 29000.0,
+      "g": 11200.0,
+      "density": 0.490,
+      "fy": 50.0,
+      "fu": 65.0
+    },
+    {
+      "id": "CONC_4K",
+      "name": "Normal weight concrete, f'c=4 ksi",
+      "materialType": "Concrete",
+      "e": 3600.0,
+      "g": 1500.0,
+      "density": 0.150,
+      "fy": 0.0,
+      "fu": 0.0
+    }
+  ]
+}

@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\materials_basic.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Data\materials_basic.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CBFrame.Core\CBFrame.Core.csproj" />
   </ItemGroup>
 
